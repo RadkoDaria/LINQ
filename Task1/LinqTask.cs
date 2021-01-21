@@ -128,9 +128,9 @@ namespace Task1
             decimal expensive
         )
         {
-            IEnumerable<(decimal category, IEnumerable<Product> products)> result = products.GroupBy(p => p.UnitPrice <= cheap ? "cheap" :
-            p.UnitPrice >= expensive ? "expensive" : "average").Select(prod => new ValueTuple<decimal, IEnumerable<Product>>(prod.Count(), prod));
-            
+            IEnumerable<(decimal category, IEnumerable<Product> products)> result = products.GroupBy(p => p.UnitPrice <= cheap ? cheap :
+          p.UnitPrice >= expensive ? expensive : middle).Select(prod => new ValueTuple<decimal, IEnumerable<Product>>(prod.Key, prod));
+
             return result;
         }
 
@@ -143,15 +143,14 @@ namespace Task1
                 .Select(city => new ValueTuple<string, int, int>
                 (
                   city.Key,
-                  (int)city.Average(x => x.Orders.Sum(o => o.Total)),
-                  (int)city.Average(x => x.Orders.Length)
+                  (int)Math.Round(city.Average(x => x.Orders.Sum(o => o.Total))),
+                  (int)Math.Round(city.Average(x => x.Orders.Length))
                 ));
             return result;
         }
 
         public static string Linq10(IEnumerable<Supplier> suppliers)
         {
-            //var result = suppliers.OrderBy(o => o.Country.Length).ThenBy(o => o.Country).Select(o=>o.ToString).Distinct();
             var res = (from sup in suppliers
                          orderby sup.Country
                          orderby sup.Country.Length
